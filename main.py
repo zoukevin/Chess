@@ -12,13 +12,6 @@ fps = 30
 
 wood, white, black = ("#deb887", "#ffffff", "#D3D3D3")
 
-pieceNames = ["bB", "bK", "bN", "bp", "bQ", "bR", "wB", "wK", "wN", "wp", "wQ", "wR"]
-images = {}
-for i in pieceNames:
-    images[i] = pygame.transform.scale(pygame.image.load("assets/" + i + ".png"), (squareWidth, squareWidth))
-
-bgColor = pygame.Color( 255, 255, 255 )
-
 def InitPygame(screenWidth, screenHeight):
     global window
     global timer
@@ -29,10 +22,6 @@ def InitPygame(screenWidth, screenHeight):
     pygame.display.set_caption( "Chess!" )
 
 InitPygame(screenWidth, screenHeight)
-
-board = np.zeros((8,8), dtype = int) #Creates matrix with numpy
-
-board[:,:] = 12 #Initialise pieces to none
 
 #Black Pieces
 bB = 0
@@ -50,7 +39,15 @@ wp = 9
 wQ = 10
 wR = 11
 
+#Load piece images
+pieceNames = ["bB", "bK", "bN", "bp", "bQ", "bR", "wB", "wK", "wN", "wp", "wQ", "wR"]
+images = {}
+for i in pieceNames:
+    images[i] = pygame.transform.scale(pygame.image.load("assets/" + i + ".png"), (squareWidth, squareWidth))
+
 #Initialize board state
+board = np.zeros((8,8), dtype = int) #Creates matrix with numpy
+board[:,:] = 12 #Initialise pieces to none
 board[0, :] = [bR, bN, bB, bQ, bK, bB, bN, bR] 
 board[1, :] = bp
 board[7, :] = [wR, wN, wB, wQ, wK, wB, wN, wR]
@@ -92,4 +89,3 @@ while finished == False:
     pygame.display.flip()
     timer.tick(fps)
 
-    
