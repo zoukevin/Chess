@@ -37,28 +37,28 @@ board = np.zeros((8,8), dtype = int) #Creates matrix with numpy
 board[:,:] = 12 #Initialise pieces to none
 
 #Black Pieces
-#0 - Bishop
-#1 - King
-#2 - Knight
-#3 - Pawn
-#4 - Queen
-#5 - Rook
+bB = 0
+bK = 1
+bN = 2
+bp = 3
+bQ = 4
+bR = 5
 
 #White Pieces
-#6 - Bishop
-#7 - King
-#8 - Knight
-#9 - Pawn
-#10 - Queen
-#11 - Rook
-
-#White pieces
-board[0, :] = [5, 2, 0, 4, 1, 0, 2, 5] 
-board[1, :] = 3
+wB = 6
+wK = 7
+wN = 8
+wp = 9
+wQ = 10
+wR = 11
 
 #Black pieces
-board[7, :] = [11, 8, 6, 10, 7, 6, 8, 11]
-board[6, :] = 9
+board[0, :] = [bR, bN, bB, bQ, bK, bB, bN, bR] 
+board[1, :] = bp
+
+#White pieces
+board[7, :] = [wR, wN, wB, wQ, wK, wB, wN, wR]
+board[6, :] = wp
 
 finished = False
 isPieceSelected = False
