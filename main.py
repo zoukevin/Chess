@@ -13,9 +13,9 @@ fps = 30
 
 wood = ("#deb887")
 white = ("#ffffff")
-black = ("#000000")
+black = ("#D3D3D3")
 
-pieceNames = ["bB", "bK", "bN", "bp", "bQ", "bR",               "wB", "wK", "wN", "wp", "wQ", "wR"]
+pieceNames = ["bB", "bK", "bN", "bp", "bQ", "bR", "wB", "wK", "wN", "wp", "wQ", "wR"]
 images = {}
 for i in pieceNames:
     images[i] = pygame.transform.scale(pygame.image.load("assets/" + i + ".png"), (80, 80))
@@ -33,17 +33,34 @@ def InitPygame(screenWidth, screenHeight):
 
 InitPygame(screenWidth, screenHeight)
 
-#1,2,3,...,12 = black: bishop, king, knight, pawn, queen, rook, white:...
 board = np.zeros((8,8), dtype = int)
-board[:,:] = 12
-#white pieces
-board[0, :] = [11, 6, 8, 7, 10, 8, 6, 11]
-board[1, :] = 9
+
+board[:,:] = 12 #Initialise pieces to none
+
+#Black Pieces
+#0 - Bishop
+#1 - King
+#2 - Knight
+#3 - Pawn
+#4 - Queen
+#5 - Rook
+
+#White Pieces
+#6 - Bishop
+#7 - King
+#8 - Knight
+#9 - Pawn
+#10 - Queen
+#11 - Rook
+
+#White pieces
+board[0, :] = [5, 2, 0, 4, 1, 0, 2, 5] 
+board[1, :] = 3
 
 
-#black pieces
-board[7, :] = [5, 0, 2, 4, 1, 2, 0, 5]
-board[6, :] = 3
+#Black pieces
+board[7, :] = [11, 8, 6, 10, 7, 6, 8, 11]
+board[6, :] = 9
 
 
 finished = False
