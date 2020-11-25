@@ -1,6 +1,5 @@
 #hello
-#change
-#another change
+
 import pygame, sys
 from pygame.locals import *
 
