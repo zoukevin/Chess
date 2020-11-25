@@ -1,5 +1,3 @@
-#hello
-
 import pygame, sys
 from pygame.locals import *
 import numpy as np
@@ -7,7 +5,7 @@ import math
 
 screenWidth = 1280
 screenHeight = 800
-squareWidth = 80
+squareWidth = 100
 timer = None
 window = None
 fps = 30
@@ -17,7 +15,7 @@ wood, white, black = ("#deb887", "#ffffff", "#D3D3D3")
 pieceNames = ["bB", "bK", "bN", "bp", "bQ", "bR", "wB", "wK", "wN", "wp", "wQ", "wR"]
 images = {}
 for i in pieceNames:
-    images[i] = pygame.transform.scale(pygame.image.load("assets/" + i + ".png"), (80, 80))
+    images[i] = pygame.transform.scale(pygame.image.load("assets/" + i + ".png"), (squareWidth, squareWidth))
 
 bgColor = pygame.Color( 255, 255, 255 )
 
@@ -52,11 +50,9 @@ wp = 9
 wQ = 10
 wR = 11
 
-#Black pieces
+#Initialize board state
 board[0, :] = [bR, bN, bB, bQ, bK, bB, bN, bR] 
 board[1, :] = bp
-
-#White pieces
 board[7, :] = [wR, wN, wB, wQ, wK, wB, wN, wR]
 board[6, :] = wp
 
@@ -73,35 +69,27 @@ while finished == False:
             finished = True
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             pos = pygame.mouse.get_pos()
-            if (isPieceSelected == True):
-                isPieceSelected = False
-                #move the piece
-                print("moving piece")
-                print(pieceSelected)
-                #Assigns the new position to the clicked piece
-                board[math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth)] = board[pieceSelected[0], pieceSelected[1]]
-                board[pieceSelected[0], pieceSelected[1]] = 12
-                #If mouse is being held down
-                    #Draw at mouse position by deleting the piece first then making it follow the cursor
-            else:
+            if (isPieceSelected == False):
                 #If piece is selected, prepare to move it
                 isPieceSelected = True
                 pieceSelected = (math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth))
-                print(pieceSelected)
-
+            else:
+                #Move the piece
+                isPieceSelected = False
+                board[math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth)] = board[pieceSelected[0], pieceSelected[1]] #Assigns the new position to the clicked piece
+                board[pieceSelected[0], pieceSelected[1]] = 12
+                #If mouse is being held down
+                    #Draw at mouse position by deleting the piece first then making it follow the cursor
+                
     #Draw the chessboard
     for x in range(8):
         for y in range(8):
-            if (((x + y) % 2) == 0):
-                color = white
-            else:
-                color = black    
-            pygame.draw.rect(window, color, pygame.Rect((x * 80), (y * 80), 80, 80))
+            color = white if (((x + y) % 2) == 0) else black
+            pygame.draw.rect(window, color, pygame.Rect((y * squareWidth), (x * squareWidth), squareWidth, squareWidth))
+            if (board[x, y] != 12):
+                window.blit(images[pieceNames[board[x, y]]], (y*squareWidth, x*squareWidth))
 
-    for i in range(8):
-        for j in range(8):
-            if (board[i, j] != 12):
-                window.blit(images[pieceNames[board[i, j]]], (j*80, i*80))
-       
     pygame.display.flip()
     timer.tick(fps)
+
+    
