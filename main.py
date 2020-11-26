@@ -46,7 +46,7 @@ for i in pieceNames:
     images[i] = pygame.transform.scale(pygame.image.load("assets/" + i + ".png"), (squareWidth, squareWidth))
 
 #Initialize board state
-board = np.zeros((8,8), dtype = int) #Creates matrix with numpy
+board = np.zeros((8,8), dtype = int) #Creates matrix with numpy (y, x)
 board[:,:] = 12 #Initialise pieces to none
 board[0, :] = [bR, bN, bB, bQ, bK, bB, bN, bR] 
 board[1, :] = bp
@@ -67,9 +67,13 @@ while finished == False:
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             pos = pygame.mouse.get_pos()
             if (isPieceSelected == False):
-                #If piece is selected, prepare to move it
+                #If piece is selected, prepare to move it. 
                 isPieceSelected = True
                 pieceSelected = (math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth))
+                #If the square is empty, then reset the selected piece.
+                if board[pieceSelected] == 12:
+                    pieceSelected = (0, 0)
+                    isPieceSelected = False 
             else:
                 #Move the piece
                 isPieceSelected = False
