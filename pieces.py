@@ -2,7 +2,7 @@
 class Piece():
 
     @staticmethod
-    def isValid(position, newPosition, pieceType, targetPieceType):
+    def isValid(position, newPosition, pieceType, targetPieceType, board):
         if not(Piece.isPiecePattern(position, newPosition, pieceType, targetPieceType)):
             return False
         if Piece.isTargetTeam(position, newPosition, pieceType, targetPieceType):
