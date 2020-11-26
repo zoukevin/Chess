@@ -82,7 +82,7 @@ while finished == False:
             if isPieceSelected:
                 #Move the piece
                 isPieceSelected = False
-                if Piece.isValid((pieceSelected[0], pieceSelected[1]), (math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth)), board[pieceSelected[0], pieceSelected[1]]):
+                if Piece.isValid((pieceSelected[0], pieceSelected[1]), (math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth)), board[pieceSelected[0], pieceSelected[1]], board[math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth)]):
                     board[math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth)] = board[pieceSelected[0], pieceSelected[1]] #Assigns the new position to the clicked piece
                     board[pieceSelected[0], pieceSelected[1]] = 12
                     #If mouse is being held down
