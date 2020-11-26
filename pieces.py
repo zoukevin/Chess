@@ -1,33 +1,24 @@
-class Piece:
-    def __init__(self, classPiece, position):
-        self.classPiece = classPiece
-        self.position = position
 
-    def isValid(newPosition):
-        pass
+class Piece():
 
-    def movePiece(newPosition):
-        position = newPosition
-
-class King(Piece):
-    def __init__(self, classPiece, position):
-        super().__init__(self, classPiece, position)
-
-    def isValid(newPosition):
+    @staticmethod
+    def isValid(position, newPosition, pieceType):
+        print(position)
+        print(newPosition)
+        print(pieceType)
         currentX = position[0]
         currentY = position[1]
         newX = newPosition[0]
         newY = newPosition[1]
-        if (currentY == newY):
-            if (abs(newX - currentX) == 1):
-                return True
-        if (currentX == newX):
-            if (abs(newY - currentY) == 1):
-                return True
+        if (pieceType == 7):
+            if (currentY == newY):
+                if (abs(newX - currentX) == 1):
+                    return True
+            elif (currentX == newX):
+                if (abs(newY - currentY) == 1):
+                    return True
+            else:
+                return False
 
-        return False
-
-    def movePiece(newPosition):
-        if isValid(newPosition):
-            super().movePiece(newPosition)
+        return True
 

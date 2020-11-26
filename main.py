@@ -2,6 +2,7 @@ import pygame, sys
 from pygame.locals import *
 import numpy as np
 import math
+from pieces import *
 
 screenWidth = 1280
 screenHeight = 800
@@ -77,10 +78,11 @@ while finished == False:
             else:
                 #Move the piece
                 isPieceSelected = False
-                board[math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth)] = board[pieceSelected[0], pieceSelected[1]] #Assigns the new position to the clicked piece
-                board[pieceSelected[0], pieceSelected[1]] = 12
-                #If mouse is being held down
-                    #Draw at mouse position by deleting the piece first then making it follow the cursor
+                if Piece.isValid((pieceSelected[0], pieceSelected[1]), (math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth)), board[pieceSelected[0], pieceSelected[1]]):
+                    board[math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth)] = board[pieceSelected[0], pieceSelected[1]] #Assigns the new position to the clicked piece
+                    board[pieceSelected[0], pieceSelected[1]] = 12
+                    #If mouse is being held down
+                        #Draw at mouse position by deleting the piece first then making it follow the cursor
                 
     #Draw the chessboard
     for x in range(8):
