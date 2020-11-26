@@ -77,16 +77,31 @@ while finished == False:
                     if board[pieceSelected] == 12:
                         pieceSelected = (0, 0)
                         isPieceSelected = False 
+                else:
+                    isPieceSelected = False
+                    if Piece.isValid((pieceSelected[0], pieceSelected[1]), (math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth)), board[pieceSelected[0], pieceSelected[1]], board[math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth)]):
+                        board[math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth)] = board[pieceSelected[0], pieceSelected[1]] #Assigns the new position to the clicked piece
+                        board[pieceSelected[0], pieceSelected[1]] = 12
 
-        if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
-            if isPieceSelected:
-                #Move the piece
-                isPieceSelected = False
-                if Piece.isValid((pieceSelected[0], pieceSelected[1]), (math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth)), board[pieceSelected[0], pieceSelected[1]], board[math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth)]):
-                    board[math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth)] = board[pieceSelected[0], pieceSelected[1]] #Assigns the new position to the clicked piece
-                    board[pieceSelected[0], pieceSelected[1]] = 12
-                    #If mouse is being held down
-                        #Draw at mouse position by deleting the piece first then making it follow the cursor
+            if event.type == pygame.MOUSEMOTION:
+                print('hello')
+                if (isPieceSelected == False):
+                    #If piece is selected, prepare to move it. 
+                    isPieceSelected = True
+                    pieceSelected = (math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth))
+                    #If the square is empty, then reset the selected piece.
+                    print(pieceSelected)
+                    if board[pieceSelected] == 12:
+                        pieceSelected = (0, 0)
+                        isPieceSelected = False 
+                else:
+                    isPieceSelected = False
+                    if Piece.isValid((pieceSelected[0], pieceSelected[1]), (math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth)), board[pieceSelected[0], pieceSelected[1]], board[math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth)]):
+                        board[math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth)] = board[pieceSelected[0], pieceSelected[1]] #Assigns the new position to the clicked piece
+                        board[pieceSelected[0], pieceSelected[1]] = 12
+
+                #if mouse released 
+
                 
     #Draw the chessboard
     for x in range(8):
