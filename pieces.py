@@ -7,12 +7,32 @@ class Piece():
             return False
         if Piece.isTargetTeam(position, newPosition, pieceType, targetPieceType):
             return False
-        if Piece.isPathCollision(position, newPosition, pieceType, targetPieceType):
+        if Piece.isPathCollision(position, newPosition, pieceType, targetPieceType, board):
             return False
         return True
 
     @staticmethod
-    def isPathCollision(position, newPosition, pieceType, targetPieceType): #Queen, bishop, rook
+    def isPathCollision(position, newPosition, pieceType, targetPieceType, board): #Queen, bishop, rook
+        checkY = []
+        checkX = []
+
+        #Queen
+        if (pieceType == 10) or (pieceType == 4) or (pieceType == 5) or (pieceType == 11) or (pieceType == 6) or (pieceType == 0):
+            stride = 1 if newPosition[0] < position[0] else -1
+            for i in range(newPosition[0], position[0] + stride, stride):
+                checkY.append(i)
+            stride = 1 if newPosition[1] < position[1] else -1
+            for i in range(newPosition[1], position[1] + stride, stride):
+                checkX.append(i)
+            while(len(checkX) != len(checkY)):
+                if len(checkX) < len(checkY):
+                    checkX.append(checkX[0])
+                else:
+                    checkY.append(checkY[0])
+            for i in range(len(checkX)):
+                if (board[checkY[i], checkX[i]] != 12) and ((checkY[i], checkX[i]) != position) and ((checkY[i], checkX[i]) != newPosition):
+                    return True
+
         return False
 
     #Returns true if the move follows a correct pattern of the piece
@@ -94,6 +114,15 @@ class Piece():
             elif (abs(position[0] - newPosition[0]) == 2) and (abs(position[1] - newPosition[1]) == 1):
                 return True
             return False
+
+        #Rook
+        if (pieceType == 5) or (pieceType == 11):
+            if (position[1] == newPosition[1]):
+                return True
+            elif (position[0] == newPosition[0]):
+                return True
+            return False
+
 
         return True
 
