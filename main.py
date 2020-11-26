@@ -61,6 +61,16 @@ while finished == False:
         if ( event.type == QUIT ):
             finished = True
 
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_r:
+                board[:,:] = 12 #Initialise pieces to none
+                board[0, :] = [bR, bN, bB, bQ, bK, bB, bN, bR] 
+                board[1, :] = bp
+                board[7, :] = [wR, wN, wB, wQ, wK, wB, wN, wR]
+                board[6, :] = wp
+                turn = True
+
+
         #Mouse click to move
         if pygame.mouse.get_pressed()[0]:
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and dragging == False:
