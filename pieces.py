@@ -5,7 +5,38 @@ class Piece():
     def isValid(position, newPosition, pieceType, targetPieceType):
         if not(Piece.isPiecePattern(position, newPosition, pieceType, targetPieceType)):
             return False
+        if Piece.isTargetTeam(position, newPosition, pieceType, targetPieceType):
+            return False
+        if Piece.isPathCollision(position, newPosition, pieceType, targetPieceType):
+            return False
         return True
+
+    @staticmethod
+    def isPathCollision(position, newPosition, pieceType, targetPieceType): #Queen, bishop, rook
+        return False
+
+    #Returns true if the move follows a correct pattern of the piece
+    @staticmethod
+    def isTargetTeam(position, newPosition, pieceType, targetPieceType):
+        if (pieceType <= 5):
+            if (targetPieceType <= 5):
+                return True
+        elif (pieceType <= 11):
+            if (6 <= targetPieceType <= 11):
+                return True
+        return False
+        #King
+
+    @staticmethod
+    def isTargetEnemy(position, newPosition, pieceType, targetPieceType):
+        if (pieceType <= 5):
+            if (6 <= targetPieceType <= 11):
+                return True
+        elif (pieceType <= 11):
+            if (targetPieceType <= 5):
+                return True
+        return False
+        #King
 
     #Returns true if the move follows a correct pattern of the piece
     @staticmethod
@@ -24,12 +55,19 @@ class Piece():
 
         #Pawn
         if (pieceType == 9) or (pieceType == 3):
+            isWhite = 1 if pieceType == 9 else -1
+            spawnPawnPos = 6 if isWhite == 1 else 1
             if (position[1] == newPosition[1]):
-                isWhite = 1 if pieceType == 9 else -1
-                spawnPawnPos = 6 if isWhite == 1 else 1
                 if ((position[0] - newPosition[0])*isWhite == 1):
+                    if Piece.isTargetEnemy(position, newPosition, pieceType, targetPieceType):
+                        return False
                     return True
                 elif (((position[0] - newPosition[0])*isWhite == 2) and (position[0] == spawnPawnPos)):
+                    if Piece.isTargetEnemy(position, newPosition, pieceType, targetPieceType):
+                        return False
+                    return True
+            elif (abs(newPosition[1] - position[1]) == 1) and ((position[0] - newPosition[0])*isWhite == 1):
+                if Piece.isTargetEnemy(position, newPosition, pieceType, targetPieceType):
                     return True
             return False
 
