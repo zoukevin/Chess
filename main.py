@@ -14,8 +14,9 @@ fps = 30
 finished = False
 isPieceSelected = False
 pieceSelected = (0,0)
+turn = True
 dragging = False
-turn = True #True = White/ False = Black
+pieceIsDragged = False
 
 wood, white, black, red = ("#DEB887", "#FFFFFF", "#D3D3D3", "#FF0606")
 
@@ -62,14 +63,13 @@ while finished == False:
         #Mouse click to move
         if pygame.mouse.get_pressed()[0]:
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and dragging == False:
+
                 #Prepare to select a piece.
                 if (isPieceSelected == False): 
                     isPieceSelected = True
                     pieceSelected = (math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth))
 
-                    if turn == True and board[pieceSelected] < 6:
-                        isPieceSelected = False
-                    if turn == False and board[pieceSelected] > 5:
+                    if (turn and board[pieceSelected] < 6) or (turn == False and board[pieceSelected] > 5):
                         isPieceSelected = False
 
                     #If the square is empty, then reset the selected piece.
@@ -81,47 +81,49 @@ while finished == False:
                 #Move the selected piece and remove the previous position from the board
                 else:
                     isPieceSelected = False
-                    if Piece.isValid((pieceSelected[0], pieceSelected[1]), (math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth)), board[pieceSelected[0], pieceSelected[1]], board[math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth)], board):
-                        board[math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth)] = board[pieceSelected[0], pieceSelected[1]]
-                        board[pieceSelected[0], pieceSelected[1]] = 12
-                        if turn == True:
-                            turn = False
-                        else:
-                            turn = True
+                    if Piece.isValid(pieceSelected, (math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth)), board[pieceSelected], board[math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth)], board):
+                        board[math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth)] = board[pieceSelected]
+                        board[pieceSelected] = 12
+                        turn = False if turn == True else True
+
                     dragging = False
 
             #Mouse drag to move
             if event.type == pygame.MOUSEMOTION:
+                #Make the piece follow the mouse cursor 
+                if isPieceSelected and pieceIsDragged == False:
+                    movingPiece = board[pieceSelected]
+                    board[pieceSelected] = 12
+                    pieceIsDragged = True
+                               
                 dragging = True   
                 #Prepare to select a piece. 
                 if (isPieceSelected == False):
-                    dragging = True
                     isPieceSelected = True
                     pieceSelected = (math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth))
 
-                    if turn == True and board[pieceSelected] < 6:
+                    if (turn and board[pieceSelected] < 6) or (turn == False and board[pieceSelected] > 5):
                         isPieceSelected = False
-                    if turn == False and board[pieceSelected] > 5:
-                        isPieceSelected = False
-
-                    #If the square is empty, then reset the selected piece.
+                        
+                    # #If the square is empty, then reset the selected piece
                     if board[pieceSelected] == 12:
                         pieceSelected = (0, 0)
                         isPieceSelected = False 
                     dragging = False
+
         if event.type == pygame.MOUSEBUTTONUP and dragging == True:
             #Move the selected piece and remove the previous position from the board
             if isPieceSelected:
                 isPieceSelected = False
-                if Piece.isValid((pieceSelected[0], pieceSelected[1]), (math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth)), board[pieceSelected[0], pieceSelected[1]], board[math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth)], board):
-                    board[math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth)] = board[pieceSelected[0], pieceSelected[1]]
-                    board[pieceSelected[0], pieceSelected[1]] = 12
-                    if turn == True:
-                        turn = False
-                    else:
-                        turn = True
+
+                if Piece.isValid(pieceSelected, (math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth)), movingPiece, board[math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth)], board):
+                    board[math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth)] = movingPiece
+                    turn = False if turn == True else True     
+                else:
+                    board[pieceSelected] = movingPiece
+                pieceIsDragged = False
                 dragging = False
-     
+
     #Draw the chessboard
     for x in range(8):
         for y in range(8):
@@ -134,6 +136,9 @@ while finished == False:
             pygame.draw.rect(window, color, pygame.Rect((y * squareWidth), (x * squareWidth), squareWidth, squareWidth))
             if (board[x, y] != 12):
                 window.blit(images[pieceNames[board[x, y]]], (y*squareWidth, x*squareWidth))
+    
+    if pieceIsDragged:
+        window.blit(images[pieceNames[movingPiece]], (math.floor(pos[0] - squareWidth // 2), math.floor(pos[1] - squareWidth // 2)))
 
     pygame.display.flip()
     timer.tick(fps)
