@@ -63,19 +63,23 @@ window.fill(wood)
 while finished == False:
     
     for event in pygame.event.get():
+        pos = pygame.mouse.get_pos()
         if ( event.type == QUIT ):
             finished = True
-        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-            pos = pygame.mouse.get_pos()
-            if (isPieceSelected == False):
-                #If piece is selected, prepare to move it. 
-                isPieceSelected = True
-                pieceSelected = (math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth))
-                #If the square is empty, then reset the selected piece.
-                if board[pieceSelected] == 12:
-                    pieceSelected = (0, 0)
-                    isPieceSelected = False 
-            else:
+        if pygame.mouse.get_pressed()[0]:
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                if (isPieceSelected == False):
+                    #If piece is selected, prepare to move it. 
+                    isPieceSelected = True
+                    pieceSelected = (math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth))
+                    #If the square is empty, then reset the selected piece.
+                    print(pieceSelected)
+                    if board[pieceSelected] == 12:
+                        pieceSelected = (0, 0)
+                        isPieceSelected = False 
+
+        if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
+            if isPieceSelected:
                 #Move the piece
                 isPieceSelected = False
                 if Piece.isValid((pieceSelected[0], pieceSelected[1]), (math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth)), board[pieceSelected[0], pieceSelected[1]]):
