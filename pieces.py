@@ -61,6 +61,10 @@ class Piece():
     #Returns true if the move follows a correct pattern of the piece
     @staticmethod
     def isPiecePattern(position, newPosition, pieceType, targetPieceType):
+
+        if position == newPosition:
+            return False
+
         #King
         if (pieceType == 7) or (pieceType == 1):
             if (position[1] == newPosition[1]):

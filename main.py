@@ -9,7 +9,7 @@ screenHeight = 800
 squareWidth = 100
 timer = None
 window = None
-fps = 30
+fps = 60
 
 finished = False
 isPieceSelected = False
@@ -51,9 +51,10 @@ board[1, :] = bp
 board[7, :] = [wR, wN, wB, wQ, wK, wB, wN, wR]
 board[6, :] = wp
 
-window.fill(wood)
+
 
 while finished == False:
+    window.fill(wood)
     
     for event in pygame.event.get():
         pos = pygame.mouse.get_pos()
@@ -124,6 +125,8 @@ while finished == False:
                 pieceIsDragged = False
                 dragging = False
 
+
+
     #Draw the chessboard
     for x in range(8):
         for y in range(8):
@@ -139,7 +142,11 @@ while finished == False:
     
     if pieceIsDragged:
         window.blit(images[pieceNames[movingPiece]], (math.floor(pos[0] - squareWidth // 2), math.floor(pos[1] - squareWidth // 2)))
+    if (turn == True):
+        window.blit(images[pieceNames[7]], (900, screenHeight - 200))
+    else:
+        window.blit(images[pieceNames[1]], (900, 200))
 
-    pygame.display.flip()
+    pygame.display.update()
     timer.tick(fps)
 
