@@ -24,7 +24,7 @@ turnNumber = 1
 whiteMoves = []
 blackMoves = []
 allMoves = []
-numTurnsShown = 14
+numTurnsShown = 10
 wood, white, black, red, gray = ("#DEB887", "#FFFFFF", "#000000", "#FF0606", "#D3D3D3")
 moveColor = white
 prevMovedPiece = 12
@@ -54,8 +54,10 @@ wB, wK, wN, wp, wQ, wR = 6, 7, 8, 9, 10, 11
 #Load piece images
 pieceNames = ["bB", "bK", "bN", "bp", "bQ", "bR", "wB", "wK", "wN", "wp", "wQ", "wR"]
 images = {}
+smallImages = {}
 for i in pieceNames:
     images[i] = pygame.transform.scale(pygame.image.load("assets/" + i + ".png"), (squareWidth, squareWidth))
+    smallImages[i] = pygame.transform.scale(pygame.image.load("assets/" + i + ".png"), (math.floor(squareWidth*5/8), math.floor(squareWidth*5/8)))
 
 #Initialize board state
 board = np.zeros((8,8), dtype = int) #Creates matrix with numpy (y, x)
@@ -85,6 +87,7 @@ while finished == False:
                 blackMoves = []
                 allMoves = []
                 turnNumber = 1
+                castleFlags = [False, False, False, False, False, False]
 
         #Mouse click to move
         if pygame.mouse.get_pressed()[0]:
@@ -142,8 +145,8 @@ while finished == False:
 
         #Update board logic
         if movePiece:
-            # if ((movingPiece == 9) or (movingPiece == 3)) and Piece.enPessant(pieceSelected, clickedIndices, movingPiece, board[clickedIndices], board, prevMovedPiece, prevMove):
-            #     board[pieceSelected[0], pieceSelected[1] + (clickedIndices[1] - pieceSelected[1])] = 12
+            if ((movingPiece == 9) or (movingPiece == 3)) and Piece.enPessant(pieceSelected, clickedIndices, movingPiece, board[clickedIndices], board, prevMovedPiece, prevMove):
+                board[pieceSelected[0], pieceSelected[1] + (clickedIndices[1] - pieceSelected[1])] = 12
             if pieceSelected == (7, 0):
                 castleFlags[0] = True
             elif pieceSelected == (7, 7):
@@ -158,6 +161,10 @@ while finished == False:
                 castleFlags[5] = True
             movePiece = False
             prevMovedPiece = movingPiece
+            if board[clickedIndices] < 6:
+                defeatedBlack.append(board[clickedIndices])
+            elif board[clickedIndices] < 12:
+                defeatedWhite.append(board[clickedIndices])
             board[clickedIndices] = movingPiece
             oldLocation = pieceSelected
             newLocation = clickedIndices
@@ -221,12 +228,22 @@ while finished == False:
         if len(allMoves) > numTurnsShown:
             moveIndex = len(allMoves) - numTurnsShown + i
         moveText = myfont.render(str(moveIndex//2 + 1) + ".", True, tempColor)
-        window.blit(moveText,(9.3*squareWidth, i*50 + 50))
+        window.blit(moveText,(9.3*squareWidth, i*50 + squareWidth))
         moveText = myfont.render(str(allMoves[moveIndex][0]), True, tempColor)
-        window.blit(moveText,(9.8*squareWidth, i*50 + 50))
+        window.blit(moveText,(9.8*squareWidth, i*50 + squareWidth))
         moveText = myfont.render(str(allMoves[moveIndex][1]), True, tempColor)
-        window.blit(moveText,(10.3*squareWidth, i*50 + 50))
+        window.blit(moveText,(10.3*squareWidth, i*50 + squareWidth))
         tempColor = black if tempColor == white else white
+
+    #Display defeated pieces
+    pieceOffset = 0
+    for i in defeatedWhite:
+        window.blit(smallImages[pieceNames[i]], (squareWidth*8 + pieceOffset, screenHeight - 100))
+        pieceOffset += 25
+
+    for i in defeatedBlack:
+        window.blit(smallImages[pieceNames[i]], (squareWidth*8 + pieceOffset, 0))
+        pieceOffset += 25
 
     pygame.display.update()
     timer.tick(fps)

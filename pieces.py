@@ -3,7 +3,6 @@ class Piece():
 
     @staticmethod
     def isValid(position, newPosition, pieceType, targetPieceType, board, prevMovedPiece, prevMove, castleFlags):
-        print(castleFlags)
         if not(Piece.isPiecePattern(position, newPosition, pieceType, targetPieceType, board, prevMovedPiece, prevMove, castleFlags)):
             return False
         if Piece.isTargetTeam(position, newPosition, pieceType, targetPieceType):
