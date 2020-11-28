@@ -80,6 +80,7 @@ while finished == False:
                 whiteMoves = []
                 blackMoves = []
                 allMoves = []
+                turnNumber = 1
 
         #Mouse click to move
         if pygame.mouse.get_pressed()[0]:
