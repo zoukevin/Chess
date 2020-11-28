@@ -62,19 +62,20 @@ class Piece():
         checkLeft = position[0], position[1] - 1
         checkRight = position[0], position[1] + 1
         validEP = False
-        checkDirection = checkLeft
+        checkDirection = checkLeft 
 
-        #Correct row and turn to enpessant
-        if (prevMove[0][0] == 1 and prevMove[1][0] == 3 and prevMovedPiece == 3) or (prevMove[0][0] == 6 and prevMove[1][0] == 4 and prevMovedPiece == 9):  
-            if Piece.isTargetEnemy(position, checkLeft, pieceType, board[checkLeft]):   #Check for direction the pawn is enpessanting   
-                checkDirection = checkLeft
-                if board[checkLeft] == 3 or board[checkLeft] == 9: #Ensure the piece taken is a pawn
-                    validEP = True
-            if Piece.isTargetEnemy(position, checkRight, pieceType, board[checkRight]):
-                checkDirection = checkRight
-                if board[checkRight] == 3 or board[checkRight] == 9:
-                    validEP = True
-
+        #If the pawn hasnt moved yet and the previous move was an enemy pawn onto a valid square, proceed to enpessant
+        if (prevMove[0][0] == 1 and prevMove[1][0] == 3 and prevMovedPiece == 3) or (prevMove[0][0] == 6 and prevMove[1][0] == 4 and prevMovedPiece == 9):
+            if position[1] != 0: #Skip the left check for out of bounds case
+                if Piece.isTargetEnemy(position, checkLeft, pieceType, board[checkLeft]):   #Check for left direction the pawn is enpessanting   
+                    checkDirection = checkLeft
+                    if board[checkLeft] == 3 or board[checkLeft] == 9: #Ensure the piece taken is a pawn
+                        validEP = True
+            if position[1] != 7: #Skip the right check for out of bounds case
+                if Piece.isTargetEnemy(position, checkRight, pieceType, board[checkRight]): #Check for right direction the pawn is enpessanting   
+                    checkDirection = checkRight
+                    if board[checkRight] == 3 or board[checkRight] == 9:
+                        validEP = True
             return True if validEP == True and (checkDirection[1] == prevMove[1][1]) and (checkDirection[1] == newPosition[1]) else False
 
         else:
@@ -96,20 +97,18 @@ class Piece():
                 if (abs(newPosition[1] - position[1]) == 1):
                     return True
                 if (abs(newPosition[1] - position[1]) == 2): #Castles
-                    print('prePhase')
-                    if pieceType == 7 and castleFlags[0] == False: #White King
-                        print('white king')
-                        if newPosition[1] == 2 and castleFlags[1] == False: #lwR
+                    if pieceType == 7 and castleFlags[2] == False: #White King
+                        if newPosition[1] == 2 and castleFlags[0] == False: #lwR
                             print('leftCastle')
                             return True
-                        elif newPosition[1] == 6 and castleFlags[2] == False: #rwR
+                        elif newPosition[1] == 6 and castleFlags[1] == False: #rwR
                             print('rightCastle')
                             return True
-                    if pieceType == 1 and castleFlags[3] == False: #Black King
-                        if newPosition[1] == 2 and castleFlags[4] == False: #lbR
+                    if pieceType == 1 and castleFlags[5] == False: #Black King
+                        if newPosition[1] == 2 and castleFlags[3] == False: #lbR
                             print('leftCastle')
                             return True
-                        elif newPosition[1] == 6 and castleFlags[5] == False: #rbR
+                        elif newPosition[1] == 6 and castleFlags[4] == False: #rbR
                             print('rightCastle')
                             return True
                     return False
