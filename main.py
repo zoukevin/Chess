@@ -101,6 +101,7 @@ while finished == False:
                 else:
                     isPieceSelected = False
                     if Piece.isValid(pieceSelected, (math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth)), board[pieceSelected], board[math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth)], board, prevMovedPiece, prevMove):
+                        prevMovedPiece = board[pieceSelected]
                         board[math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth)] = board[pieceSelected]
                         oldLocation = pieceSelected
                         newLocation = (math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth))
@@ -114,7 +115,6 @@ while finished == False:
                         turn = False if turn == True else True
                         turnNumber += 1
                         board[pieceSelected] = 12
-                        prevMovedPiece = movingPiece
                         prevMove = (oldLocation, newLocation)
                     dragging = False
 
@@ -143,6 +143,7 @@ while finished == False:
             if isPieceSelected:
                 isPieceSelected = False
                 if Piece.isValid(pieceSelected, (math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth)), movingPiece, board[math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth)], board, prevMovedPiece, prevMove):
+                    prevMovedPiece = movingPiece
                     board[math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth)] = movingPiece
                     oldLocation = pieceSelected
                     newLocation = (math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth))
@@ -155,7 +156,6 @@ while finished == False:
                         allMoves.append(savedMove)
                     turn = False if turn == True else True
                     turnNumber += 1
-                    prevMovedPiece = board[pieceSelected]
                     prevMove = (oldLocation, newLocation)
                 else:
                     board[pieceSelected] = movingPiece
