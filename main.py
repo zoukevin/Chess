@@ -28,11 +28,11 @@ numTurnsShown = 14
 wood, white, black, red, gray = ("#DEB887", "#FFFFFF", "#000000", "#FF0606", "#D3D3D3")
 moveColor = white
 prevMovedPiece = 12
-prevMove = (0, 0)
+prevMove = ((0, 0), (0, 0))
 defeatedWhite = []
 defeatedBlack = []
 movePiece = False
-castleFlags = [False, False, False, False, False, False] #wk, wlR, wrR, bk, blR, brR
+castleFlags = [False, False, False, False, False, False] #wlR, wrR, wk, blR, brR, bk
 
 def InitPygame(screenWidth, screenHeight):
     global window
@@ -142,6 +142,8 @@ while finished == False:
 
         #Update board logic
         if movePiece:
+            # if ((movingPiece == 9) or (movingPiece == 3)) and Piece.enPessant(pieceSelected, clickedIndices, movingPiece, board[clickedIndices], board, prevMovedPiece, prevMove):
+            #     board[pieceSelected[0], pieceSelected[1] + (clickedIndices[1] - pieceSelected[1])] = 12
             if pieceSelected == (7, 0):
                 castleFlags[0] = True
             elif pieceSelected == (7, 7):
@@ -171,7 +173,7 @@ while finished == False:
             prevMove = (oldLocation, newLocation)
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and dragging == False:
                 board[pieceSelected] = 12
-
+            
 
     #Draw the chessboard
     for x in range(8):
