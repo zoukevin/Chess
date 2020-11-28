@@ -29,6 +29,10 @@ wood, white, black, red, gray = ("#DEB887", "#FFFFFF", "#000000", "#FF0606", "#D
 moveColor = white
 prevMovedPiece = 12
 prevMove = (0, 0)
+defeatedWhite = []
+defeatedBlack = []
+movePiece = False
+castleFlags = [False, False, False, False, False, False] #wk, wlR, wrR, bk, blR, brR
 
 def InitPygame(screenWidth, screenHeight):
     global window
@@ -84,11 +88,12 @@ while finished == False:
 
         #Mouse click to move
         if pygame.mouse.get_pressed()[0]:
+            clickedIndices = (math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth))
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and dragging == False:
                 #Prepare to select a piece.
                 if (isPieceSelected == False): 
                     isPieceSelected = True
-                    pieceSelected = (math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth))
+                    pieceSelected = clickedIndices
                     if (turn and board[pieceSelected] < 6) or (turn == False and board[pieceSelected] > 5):
                         isPieceSelected = False
                     #If the square is empty, then reset the selected piece.
@@ -100,22 +105,8 @@ while finished == False:
                 #Move the selected piece and remove the previous position from the board
                 else:
                     isPieceSelected = False
-                    if Piece.isValid(pieceSelected, (math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth)), board[pieceSelected], board[math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth)], board, prevMovedPiece, prevMove):
-                        prevMovedPiece = board[pieceSelected]
-                        board[math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth)] = board[pieceSelected]
-                        oldLocation = pieceSelected
-                        newLocation = (math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth))
-                        savedMove = (string.ascii_lowercase[pieceSelected[1]] + str(9 - (pieceSelected[0] + 1)), string.ascii_lowercase[math.floor(pos[0]/squareWidth)] + str(9 - (math.floor(pos[1]/squareWidth) + 1)))
-                        if turn == True:
-                            whiteMoves.append(savedMove)
-                            allMoves.append(savedMove)
-                        else:
-                            blackMoves.append(savedMove)
-                            allMoves.append(savedMove)
-                        turn = False if turn == True else True
-                        turnNumber += 1
-                        board[pieceSelected] = 12
-                        prevMove = (oldLocation, newLocation)
+                    if Piece.isValid(pieceSelected, clickedIndices, board[pieceSelected], board[clickedIndices], board, prevMovedPiece, prevMove, castleFlags):
+                        movePiece = True
                     dragging = False
 
             #Mouse drag to move
@@ -129,7 +120,7 @@ while finished == False:
                 #Prepare to select a piece. 
                 if (isPieceSelected == False):
                     isPieceSelected = True
-                    pieceSelected = (math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth))
+                    pieceSelected = clickedIndices
                     if (turn and board[pieceSelected] < 6) or (turn == False and board[pieceSelected] > 5):
                         isPieceSelected = False
                     # #If the square is empty, then reset the selected piece
@@ -142,25 +133,45 @@ while finished == False:
             #Move the selected piece and remove the previous position from the board
             if isPieceSelected:
                 isPieceSelected = False
-                if Piece.isValid(pieceSelected, (math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth)), movingPiece, board[math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth)], board, prevMovedPiece, prevMove):
-                    prevMovedPiece = movingPiece
-                    board[math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth)] = movingPiece
-                    oldLocation = pieceSelected
-                    newLocation = (math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth))
-                    savedMove = (string.ascii_lowercase[pieceSelected[1]] + str(9 - (pieceSelected[0] + 1)), string.ascii_lowercase[math.floor(pos[0]/squareWidth)] + str(9 - (math.floor(pos[1]/squareWidth) + 1)))
-                    if turn == True:
-                        whiteMoves.append(savedMove)
-                        allMoves.append(savedMove)
-                    else:
-                        blackMoves.append(savedMove)
-                        allMoves.append(savedMove)
-                    turn = False if turn == True else True
-                    turnNumber += 1
-                    prevMove = (oldLocation, newLocation)
+                if Piece.isValid(pieceSelected, clickedIndices, movingPiece, board[clickedIndices], board, prevMovedPiece, prevMove, castleFlags):
+                    movePiece = True
                 else:
                     board[pieceSelected] = movingPiece
                 pieceIsDragged = False
                 dragging = False
+
+        #Update board logic
+        if movePiece:
+            if pieceSelected == (7, 0):
+                castleFlags[0] = True
+            elif pieceSelected == (7, 7):
+                castleFlags[1] = True
+            elif pieceSelected == (7, 4):
+                castleFlags[2] = True
+            elif pieceSelected == (0, 0):
+                castleFlags[3] = True
+            elif pieceSelected == (0, 7):
+                castleFlags[4] = True
+            elif pieceSelected == (0, 4):
+                castleFlags[5] = True
+            movePiece = False
+            prevMovedPiece = movingPiece
+            board[clickedIndices] = movingPiece
+            oldLocation = pieceSelected
+            newLocation = clickedIndices
+            savedMove = (string.ascii_lowercase[pieceSelected[1]] + str(9 - (pieceSelected[0] + 1)), string.ascii_lowercase[clickedIndices[1]] + str(9 - (clickedIndices[0] + 1)))
+            if turn == True:
+                whiteMoves.append(savedMove)
+                allMoves.append(savedMove)
+            else:
+                blackMoves.append(savedMove)
+                allMoves.append(savedMove)
+            turn = False if turn == True else True
+            turnNumber += 1
+            prevMove = (oldLocation, newLocation)
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and dragging == False:
+                board[pieceSelected] = 12
+
 
     #Draw the chessboard
     for x in range(8):
