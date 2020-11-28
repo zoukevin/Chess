@@ -27,6 +27,8 @@ allMoves = []
 numTurnsShown = 14
 wood, white, black, red, gray = ("#DEB887", "#FFFFFF", "#000000", "#FF0606", "#D3D3D3")
 moveColor = white
+prevMovedPiece = 12
+prevMove = (0, 0)
 
 def InitPygame(screenWidth, screenHeight):
     global window
@@ -97,7 +99,7 @@ while finished == False:
                 #Move the selected piece and remove the previous position from the board
                 else:
                     isPieceSelected = False
-                    if Piece.isValid(pieceSelected, (math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth)), board[pieceSelected], board[math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth)], board):
+                    if Piece.isValid(pieceSelected, (math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth)), board[pieceSelected], board[math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth)], board, prevMovedPiece, prevMove):
                         board[math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth)] = board[pieceSelected]
                         oldLocation = pieceSelected
                         newLocation = (math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth))
@@ -110,8 +112,9 @@ while finished == False:
                             allMoves.append(savedMove)
                         turn = False if turn == True else True
                         turnNumber += 1
-                        print(whiteMoves)
                         board[pieceSelected] = 12
+                        prevMovedPiece = movingPiece
+                        prevMove = (oldLocation, newLocation)
                     dragging = False
 
             #Mouse drag to move
@@ -138,7 +141,7 @@ while finished == False:
             #Move the selected piece and remove the previous position from the board
             if isPieceSelected:
                 isPieceSelected = False
-                if Piece.isValid(pieceSelected, (math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth)), movingPiece, board[math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth)], board):
+                if Piece.isValid(pieceSelected, (math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth)), movingPiece, board[math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth)], board, prevMovedPiece, prevMove):
                     board[math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth)] = movingPiece
                     oldLocation = pieceSelected
                     newLocation = (math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth))
@@ -151,6 +154,10 @@ while finished == False:
                         allMoves.append(savedMove)
                     turn = False if turn == True else True
                     turnNumber += 1
+                    prevMovedPiece = board[pieceSelected]
+                    prevMove = (oldLocation, newLocation)
+                    print(prevMove)
+                    print(movingPiece)
                 else:
                     board[pieceSelected] = movingPiece
                 pieceIsDragged = False

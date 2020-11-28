@@ -2,8 +2,8 @@
 class Piece():
 
     @staticmethod
-    def isValid(position, newPosition, pieceType, targetPieceType, board):
-        if not(Piece.isPiecePattern(position, newPosition, pieceType, targetPieceType, board)):
+    def isValid(position, newPosition, pieceType, targetPieceType, board, prevMovedPiece, prevMove):
+        if not(Piece.isPiecePattern(position, newPosition, pieceType, targetPieceType, board, prevMovedPiece, prevMove)):
             return False
         if Piece.isTargetTeam(position, newPosition, pieceType, targetPieceType):
             return False
@@ -59,7 +59,9 @@ class Piece():
         #King
 
     @staticmethod
-    def enPessant(position, newPosition, pieceType, targetPieceType, board):
+    def enPessant(position, newPosition, pieceType, targetPieceType, board, prevMovedPiece, prevMove):
+        print(prevMovedPiece)
+        print(prevMove)
         checkLeft = position[0], position[1] - 1
         checkRight = position[0], position[1] + 1
         validEP = False
@@ -82,7 +84,7 @@ class Piece():
 
     #Returns true if the move follows a correct pattern of the piece
     @staticmethod
-    def isPiecePattern(position, newPosition, pieceType, targetPieceType, board):
+    def isPiecePattern(position, newPosition, pieceType, targetPieceType, board, prevMovedPiece, prevMove):
 
         if position == newPosition:
             return False
@@ -116,7 +118,7 @@ class Piece():
             elif (abs(newPosition[1] - position[1]) == 1) and ((position[0] - newPosition[0])*isWhite == 1): #Taking piece diagonally
                 if Piece.isTargetEnemy(position, newPosition, pieceType, targetPieceType):
                     return True
-                elif Piece.enPessant(position, newPosition, pieceType, targetPieceType, board):
+                elif Piece.enPessant(position, newPosition, pieceType, targetPieceType, board, prevMovedPiece, prevMove):
                     return True
             return False
 
