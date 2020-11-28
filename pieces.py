@@ -47,8 +47,6 @@ class Piece():
 
     @staticmethod
     def isTargetEnemy(position, newPosition, pieceType, targetPieceType):
-        #print('check')
-        #print(targetPieceType)
         if (pieceType <= 5):
             if (6 <= targetPieceType <= 11):
                 return True
@@ -56,29 +54,31 @@ class Piece():
             if (targetPieceType <= 5):
                 return True
         return False
-        #King
 
+    #Check both sides for enpessant validity
     @staticmethod
     def enPessant(position, newPosition, pieceType, targetPieceType, board, prevMovedPiece, prevMove):
-        print(prevMovedPiece)
-        print(prevMove)
         checkLeft = position[0], position[1] - 1
         checkRight = position[0], position[1] + 1
         validEP = False
         checkDirection = checkLeft
 
-        #Check for direction the pawn is enpessanting, ensuring the piece taken is a pawn
-        if Piece.isTargetEnemy(position, checkLeft, pieceType, board[checkLeft]):
-            checkDirection = checkLeft
-            if board[checkLeft] == 3 or board[checkLeft] == 9:
-                validEP = True
-        if Piece.isTargetEnemy(position, checkRight, pieceType, board[checkRight]): 
-            checkDirection = checkRight
-            if board[checkRight] == 3 or board[checkRight] == 9:
-                validEP = True
+        #Correct row and turn to enpessant
+        if (prevMove[0][0] == 1 and prevMove[1][0] == 3 and prevMovedPiece == 3) or (prevMove[0][0] == 6 and prevMove[1][0] == 4 and prevMovedPiece == 9):  
+            print('ready to go')
+            if Piece.isTargetEnemy(position, checkLeft, pieceType, board[checkLeft]):   #Check for direction the pawn is enpessanting   
+                checkDirection = checkLeft
+                if board[checkLeft] == 3 or board[checkLeft] == 9: #Ensure the piece taken is a pawn
+                    validEP = True
+            if Piece.isTargetEnemy(position, checkRight, pieceType, board[checkRight]):
+                checkDirection = checkRight
+                if board[checkRight] == 3 or board[checkRight] == 9:
+                    validEP = True
 
-        if (validEP == True) and (newPosition[1] == checkDirection[1]):
-            return True
+            if (validEP == True) and (newPosition[1] == checkDirection[1]):
+                return True
+            else:
+                return False
         else:
             return False
 
