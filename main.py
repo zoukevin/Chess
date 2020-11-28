@@ -156,8 +156,6 @@ while finished == False:
                     turnNumber += 1
                     prevMovedPiece = board[pieceSelected]
                     prevMove = (oldLocation, newLocation)
-                    print(prevMove)
-                    print(movingPiece)
                 else:
                     board[pieceSelected] = movingPiece
                 pieceIsDragged = False
