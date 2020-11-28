@@ -4,7 +4,7 @@ class Piece():
     @staticmethod
     def isValid(position, newPosition, pieceType, targetPieceType, board, prevMovedPiece, prevMove, castleFlags):
         print(castleFlags)
-        if not(Piece.isPiecePattern(position, newPosition, pieceType, targetPieceType, board, prevMovedPiece, prevMove)):
+        if not(Piece.isPiecePattern(position, newPosition, pieceType, targetPieceType, board, prevMovedPiece, prevMove, castleFlags)):
             return False
         if Piece.isTargetTeam(position, newPosition, pieceType, targetPieceType):
             return False
@@ -82,7 +82,7 @@ class Piece():
 
     #Returns true if the move follows a correct pattern of the piece
     @staticmethod
-    def isPiecePattern(position, newPosition, pieceType, targetPieceType, board, prevMovedPiece, prevMove):
+    def isPiecePattern(position, newPosition, pieceType, targetPieceType, board, prevMovedPiece, prevMove, castleFlags):
 
         if position == newPosition:
             return False
@@ -95,6 +95,24 @@ class Piece():
             elif (position[0] == newPosition[0]):
                 if (abs(newPosition[1] - position[1]) == 1):
                     return True
+                if (abs(newPosition[1] - position[1]) == 2): #Castles
+                    print('prePhase')
+                    if pieceType == 7 and castleFlags[0] == False: #White King
+                        print('white king')
+                        if newPosition[1] == 2 and castleFlags[1] == False: #lwR
+                            print('leftCastle')
+                            return True
+                        elif newPosition[1] == 6 and castleFlags[2] == False: #rwR
+                            print('rightCastle')
+                            return True
+                    if pieceType == 1 and castleFlags[3] == False: #Black King
+                        if newPosition[1] == 2 and castleFlags[4] == False: #lbR
+                            print('leftCastle')
+                            return True
+                        elif newPosition[1] == 6 and castleFlags[5] == False: #rbR
+                            print('rightCastle')
+                            return True
+                    return False
             elif (abs(newPosition[1] - position[1]) == 1) and (abs(newPosition[0] - position[0]) == 1):
                 return True
             return False
