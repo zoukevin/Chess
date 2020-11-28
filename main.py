@@ -23,8 +23,10 @@ pieceIsDragged = False
 turnNumber = 1
 whiteMoves = []
 blackMoves = []
-
+allMoves = []
+numTurnsShown = 14
 wood, white, black, red, gray = ("#DEB887", "#FFFFFF", "#000000", "#FF0606", "#D3D3D3")
+moveColor = white
 
 def InitPygame(screenWidth, screenHeight):
     global window
@@ -57,8 +59,6 @@ board[1, :] = bp
 board[7, :] = [wR, wN, wB, wQ, wK, wB, wN, wR]
 board[6, :] = wp
 
-
-
 while finished == False:
     window.fill(wood)
     
@@ -77,20 +77,17 @@ while finished == False:
                 turn = True
                 whiteMoves = []
                 blackMoves = []
-
+                allMoves = []
 
         #Mouse click to move
         if pygame.mouse.get_pressed()[0]:
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and dragging == False:
-
                 #Prepare to select a piece.
                 if (isPieceSelected == False): 
                     isPieceSelected = True
                     pieceSelected = (math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth))
-
                     if (turn and board[pieceSelected] < 6) or (turn == False and board[pieceSelected] > 5):
                         isPieceSelected = False
-
                     #If the square is empty, then reset the selected piece.
                     if board[pieceSelected] == 12:
                         pieceSelected = (0, 0)
@@ -107,14 +104,14 @@ while finished == False:
                         savedMove = (string.ascii_lowercase[pieceSelected[1]] + str(9 - (pieceSelected[0] + 1)), string.ascii_lowercase[math.floor(pos[0]/squareWidth)] + str(9 - (math.floor(pos[1]/squareWidth) + 1)))
                         if turn == True:
                             whiteMoves.append(savedMove)
+                            allMoves.append(savedMove)
                         else:
                             blackMoves.append(savedMove)
+                            allMoves.append(savedMove)
                         turn = False if turn == True else True
                         turnNumber += 1
                         print(whiteMoves)
-
                         board[pieceSelected] = 12
-
                     dragging = False
 
             #Mouse drag to move
@@ -123,17 +120,14 @@ while finished == False:
                 if isPieceSelected and pieceIsDragged == False:
                     movingPiece = board[pieceSelected]
                     board[pieceSelected] = 12
-                    pieceIsDragged = True
-                               
+                    pieceIsDragged = True           
                 dragging = True   
                 #Prepare to select a piece. 
                 if (isPieceSelected == False):
                     isPieceSelected = True
                     pieceSelected = (math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth))
-
                     if (turn and board[pieceSelected] < 6) or (turn == False and board[pieceSelected] > 5):
                         isPieceSelected = False
-                        
                     # #If the square is empty, then reset the selected piece
                     if board[pieceSelected] == 12:
                         pieceSelected = (0, 0)
@@ -144,7 +138,6 @@ while finished == False:
             #Move the selected piece and remove the previous position from the board
             if isPieceSelected:
                 isPieceSelected = False
-
                 if Piece.isValid(pieceSelected, (math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth)), movingPiece, board[math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth)], board):
                     board[math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth)] = movingPiece
                     oldLocation = pieceSelected
@@ -152,18 +145,16 @@ while finished == False:
                     savedMove = (string.ascii_lowercase[pieceSelected[1]] + str(9 - (pieceSelected[0] + 1)), string.ascii_lowercase[math.floor(pos[0]/squareWidth)] + str(9 - (math.floor(pos[1]/squareWidth) + 1)))
                     if turn == True:
                         whiteMoves.append(savedMove)
+                        allMoves.append(savedMove)
                     else:
                         blackMoves.append(savedMove)
+                        allMoves.append(savedMove)
                     turn = False if turn == True else True
                     turnNumber += 1
-
-
                 else:
                     board[pieceSelected] = movingPiece
                 pieceIsDragged = False
                 dragging = False
-
-
 
     #Draw the chessboard
     for x in range(8):
@@ -180,6 +171,7 @@ while finished == False:
             if (board[x, y] != 12):
                 window.blit(images[pieceNames[board[x, y]]], (y*squareWidth, x*squareWidth))
     
+    #Draw piece on moving cursor
     if pieceIsDragged:
         window.blit(images[pieceNames[movingPiece]], (math.floor(pos[0] - squareWidth // 2), math.floor(pos[1] - squareWidth // 2)))
 
@@ -189,33 +181,33 @@ while finished == False:
     else:
         window.blit(images[pieceNames[1]], (squareWidth*8, 200))
 
+    #Display grid labels
     myfont = pygame.font.SysFont('Comic Sans MS', 22)
     colLabels = ["a", "b", "c", "d", "e", "f", "g", "h"]
-
-    #Display grid labels
     for x in range(8):
         colText = myfont.render(colLabels[x], True, red)
         (textWidth, textHeight) = colText.get_size()
         window.blit(colText,((x+1)*squareWidth - textWidth, 8*squareWidth - textHeight))
-
         rowText = myfont.render(str(9 - (x + 1)), False, red)
         window.blit(rowText,(0, x*squareWidth))
 
-    #Display moves for every turn
-    for i in range(len(whiteMoves)):
-        moveText = myfont.render(str(i + 1) + ".", True, white)
-        window.blit(moveText,(9.3*squareWidth, i*50))
-        moveText = myfont.render(str(whiteMoves[i][0]), True, white)
-        window.blit(moveText,(9.5*squareWidth, i*50))
-        moveText = myfont.render(str(whiteMoves[i][1]), True, white)
-        window.blit(moveText,(10*squareWidth, i*50))
-        if (i < len(blackMoves)):
-            moveText = myfont.render(str(i + 1) + ".", True, black)
-            window.blit(moveText,(9.3*squareWidth,  i*50 + 25))
-            moveText = myfont.render(str(blackMoves[i][0]), True, black)
-            window.blit(moveText,(9.5*squareWidth, i*50 + 25))
-            moveText = myfont.render(str(blackMoves[i][1]), True, black)
-            window.blit(moveText,(10*squareWidth, i*50 + 25))
+    #Display moves played for every turn
+    if len(allMoves) > numTurnsShown:
+        moveColor = white if turn == True else black
+    tempColor = moveColor
+    for i in range(len(allMoves)):
+        if i == numTurnsShown:
+            break
+        moveIndex = i
+        if len(allMoves) > numTurnsShown:
+            moveIndex = len(allMoves) - numTurnsShown + i
+        moveText = myfont.render(str(moveIndex//2 + 1) + ".", True, tempColor)
+        window.blit(moveText,(9.3*squareWidth, i*50 + 50))
+        moveText = myfont.render(str(allMoves[moveIndex][0]), True, tempColor)
+        window.blit(moveText,(9.8*squareWidth, i*50 + 50))
+        moveText = myfont.render(str(allMoves[moveIndex][1]), True, tempColor)
+        window.blit(moveText,(10.3*squareWidth, i*50 + 50))
+        tempColor = black if tempColor == white else white
 
     pygame.display.update()
     timer.tick(fps)
