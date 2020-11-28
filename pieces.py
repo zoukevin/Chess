@@ -67,13 +67,12 @@ class Piece():
             print((position, checkLeft, pieceType, board[checkLeft]))
             print("SUCCESSFUL LEFT")
             return True
-        elif Piece.isTargetEnemy(position, checkRight, pieceType, board[checkRight]): 
+        if Piece.isTargetEnemy(position, checkRight, pieceType, board[checkRight]): 
             print(position, checkRight, pieceType, board[checkRight])
             print("SUCCESSFUL RIGHT")
             return True
-        else:
-            print('FAIL')
-            return False
+        print('FAIL')
+        return False
 
     #Returns true if the move follows a correct pattern of the piece
     @staticmethod
