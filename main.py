@@ -88,6 +88,8 @@ while finished == False:
                 allMoves = []
                 turnNumber = 1
                 castleFlags = [False, False, False, False, False, False]
+                defeatedWhite = []
+                defeatedBlack = []
 
         #Mouse click to move
         if pygame.mouse.get_pressed()[0]:
@@ -241,6 +243,7 @@ while finished == False:
         window.blit(smallImages[pieceNames[i]], (squareWidth*8 + pieceOffset, screenHeight - 100))
         pieceOffset += 25
 
+    pieceOffset = 0
     for i in defeatedBlack:
         window.blit(smallImages[pieceNames[i]], (squareWidth*8 + pieceOffset, 0))
         pieceOffset += 25
