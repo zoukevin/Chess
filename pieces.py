@@ -3,7 +3,7 @@ class Piece():
 
     @staticmethod
     def isValid(position, newPosition, pieceType, targetPieceType, board):
-        if not(Piece.isPiecePattern(position, newPosition, pieceType, targetPieceType)):
+        if not(Piece.isPiecePattern(position, newPosition, pieceType, targetPieceType, board)):
             return False
         if Piece.isTargetTeam(position, newPosition, pieceType, targetPieceType):
             return False
@@ -12,12 +12,11 @@ class Piece():
         return True
 
     @staticmethod
-    def isPathCollision(position, newPosition, pieceType, targetPieceType, board): #Queen, bishop, rook
+    def isPathCollision(position, newPosition, pieceType, targetPieceType, board): #Queen, bishop, rook, pawn
         checkY = []
         checkX = []
 
-        #Queen
-        if (pieceType == 10) or (pieceType == 4) or (pieceType == 5) or (pieceType == 11) or (pieceType == 6) or (pieceType == 0):
+        if (pieceType == 10) or (pieceType == 4) or (pieceType == 5) or (pieceType == 11) or (pieceType == 6) or (pieceType == 0) or (pieceType == 3) or (pieceType == 9):
             stride = 1 if newPosition[0] < position[0] else -1
             for i in range(newPosition[0], position[0] + stride, stride):
                 checkY.append(i)
@@ -32,7 +31,6 @@ class Piece():
             for i in range(len(checkX)):
                 if (board[checkY[i], checkX[i]] != 12) and ((checkY[i], checkX[i]) != position) and ((checkY[i], checkX[i]) != newPosition):
                     return True
-
         return False
 
     #Returns true if the move follows a correct pattern of the piece
@@ -49,6 +47,8 @@ class Piece():
 
     @staticmethod
     def isTargetEnemy(position, newPosition, pieceType, targetPieceType):
+        #print('check')
+        #print(targetPieceType)
         if (pieceType <= 5):
             if (6 <= targetPieceType <= 11):
                 return True
@@ -58,9 +58,26 @@ class Piece():
         return False
         #King
 
+    @staticmethod
+    def enPessant(position, newPosition, pieceType, targetPieceType, board):
+        checkLeft = position[0], position[1] - 1
+        checkRight = position[0], position[1] + 1
+
+        if Piece.isTargetEnemy(position, checkLeft, pieceType, board[checkLeft]):
+            print((position, checkLeft, pieceType, board[checkLeft]))
+            print("SUCCESSFUL LEFT")
+            return True
+        elif Piece.isTargetEnemy(position, checkRight, pieceType, board[checkRight]): 
+            print(position, checkRight, pieceType, board[checkRight])
+            print("SUCCESSFUL RIGHT")
+            return True
+        else:
+            print('FAIL')
+            return False
+
     #Returns true if the move follows a correct pattern of the piece
     @staticmethod
-    def isPiecePattern(position, newPosition, pieceType, targetPieceType):
+    def isPiecePattern(position, newPosition, pieceType, targetPieceType, board):
 
         if position == newPosition:
             return False
@@ -79,9 +96,10 @@ class Piece():
 
         #Pawn
         if (pieceType == 9) or (pieceType == 3):
+            #Check for piece color and row position
             isWhite = 1 if pieceType == 9 else -1
             spawnPawnPos = 6 if isWhite == 1 else 1
-            if (position[1] == newPosition[1]):
+            if (position[1] == newPosition[1]): #If moving straight vertically
                 if ((position[0] - newPosition[0])*isWhite == 1):
                     if Piece.isTargetEnemy(position, newPosition, pieceType, targetPieceType):
                         return False
@@ -90,8 +108,10 @@ class Piece():
                     if Piece.isTargetEnemy(position, newPosition, pieceType, targetPieceType):
                         return False
                     return True
-            elif (abs(newPosition[1] - position[1]) == 1) and ((position[0] - newPosition[0])*isWhite == 1):
+            elif (abs(newPosition[1] - position[1]) == 1) and ((position[0] - newPosition[0])*isWhite == 1): #Taking piece diagonally
                 if Piece.isTargetEnemy(position, newPosition, pieceType, targetPieceType):
+                    return True
+                elif Piece.enPessant(position, newPosition, pieceType, targetPieceType, board):
                     return True
             return False
 
