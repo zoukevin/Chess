@@ -62,17 +62,23 @@ class Piece():
     def enPessant(position, newPosition, pieceType, targetPieceType, board):
         checkLeft = position[0], position[1] - 1
         checkRight = position[0], position[1] + 1
+        validEP = False
+        checkDirection = checkLeft
 
+        #Check for direction the pawn is enpessanting, ensuring the piece taken is a pawn
         if Piece.isTargetEnemy(position, checkLeft, pieceType, board[checkLeft]):
-            print((position, checkLeft, pieceType, board[checkLeft]))
-            print("SUCCESSFUL LEFT")
-            return True
+            checkDirection = checkLeft
+            if board[checkLeft] == 3 or board[checkLeft] == 9:
+                validEP = True
         if Piece.isTargetEnemy(position, checkRight, pieceType, board[checkRight]): 
-            print(position, checkRight, pieceType, board[checkRight])
-            print("SUCCESSFUL RIGHT")
+            checkDirection = checkRight
+            if board[checkRight] == 3 or board[checkRight] == 9:
+                validEP = True
+
+        if (validEP == True) and (newPosition[1] == checkDirection[1]):
             return True
-        print('FAIL')
-        return False
+        else:
+            return False
 
     #Returns true if the move follows a correct pattern of the piece
     @staticmethod
