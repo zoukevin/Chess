@@ -36,7 +36,6 @@ defeatedBlack = []
 movePiece = False
 castleFlags = [False, False, False, False, False, False] #wlR, wrR, wk, blR, brR, bk
 upgradePawn = False
-promotionSquare = (0, 0)
 
 def InitPygame(screenWidth, screenHeight):
     global window
@@ -76,43 +75,52 @@ selectedPieceType = board[selectedPieceIndices]
 while finished == False:
 
     while (upgradePawn == True):
-        font = pygame.font.Font('freesansbold.ttf', 24)
-        message = font.render("Click to promote", True, black, gray)
-        messageRect = message.get_rect()
-        messageRect.center = (squareWidth*4, squareWidth*2 + 85)
-
         if (turn == False):  #black
-            #pygame.draw.rect(window, gray, pygame.Rect(squareWidth*3, squareWidth*2 + 50, squareWidth*2, squareWidth*2 + 50)) 
-            #window.blit(message, messageRect)
-            print(promotionSquare)
-            print(promotionSquare[0] + 100)
-            window.blit(images["wQ"], (promotionSquare[0], promotionSquare[1]))
-            window.blit(images["wR"], (promotionSquare[0] + 100, promotionSquare[1]))
-            window.blit(images["wB"], (promotionSquare[0] + 200, promotionSquare[1]))
-            window.blit(images["wN"], (promotionSquare[0] + 300, promotionSquare[1]))
-
+            pygame.draw.rect(window, white, pygame.Rect(newLocation[1] * 100, 0, squareWidth, squareWidth*4)) 
+            window.blit(images["wQ"], (newLocation[1] * 100, 0))
+            window.blit(images["wR"], (newLocation[1] * 100, 100))
+            window.blit(images["wB"], (newLocation[1] * 100, 200))
+            window.blit(images["wN"], (newLocation[1] * 100, 300))
             pygame.display.update()
+
             for event in pygame.event.get():
                 if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                    pos = pygame.mouse.get_pos()
                     clickedIndices = (math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth))
-                    print("Clicked new piece")
+                    if clickedIndices == (newLocation[0], newLocation[1]):
+                        board[newLocation] = wQ
+                    elif clickedIndices == (newLocation[0]+1, newLocation[1]):
+                        board[newLocation] = wR
+                    elif clickedIndices == (newLocation[0]+2, newLocation[1]):
+                        board[newLocation] = wB
+                    elif clickedIndices == (newLocation[0]+3, newLocation[1]):
+                        board[newLocation] = wN
                     upgradePawn = False
                     pygame.display.update()
 
         elif (turn == True):    #white
-            pygame.draw.rect(window, gray, pygame.Rect(squareWidth*3, squareWidth*2 + 50, squareWidth*2, squareWidth*2 + 50)) 
-            window.blit(message, messageRect)
-            window.blit(images["bR"], (squareWidth*3, squareWidth*3))
-            window.blit(images["bB"], (squareWidth*4, squareWidth*3))
-            window.blit(images["bN"], (squareWidth*3, squareWidth*4))
-            window.blit(images["bQ"], (squareWidth*4, squareWidth*4))
+            pygame.draw.rect(window, white, pygame.Rect(newLocation[1] * 100, 400, squareWidth, squareWidth*4)) 
+            window.blit(images["bQ"], (newLocation[1] * 100, 400))
+            window.blit(images["bR"], (newLocation[1] * 100, 500))
+            window.blit(images["bB"], (newLocation[1] * 100, 600))
+            window.blit(images["bN"], (newLocation[1] * 100, 700))
             pygame.display.update()
 
             for event in pygame.event.get():
                 if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                    pos = pygame.mouse.get_pos()
                     clickedIndices = (math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth))
-                    print("Clicked new piece black")
-                    upgradePawn = False 
+                    print(clickedIndices)
+                    print(newLocation)
+                    if clickedIndices == (newLocation[0]-3, newLocation[1]):
+                        board[newLocation] = bQ
+                    elif clickedIndices == (newLocation[0]-2, newLocation[1]):
+                        board[newLocation] = bR
+                    elif clickedIndices == (newLocation[0]-1, newLocation[1]):
+                        board[newLocation] = bB
+                    elif clickedIndices == (newLocation[0], newLocation[1]):
+                        board[newLocation] = bN
+                    upgradePawn = False
                     pygame.display.update()
 
     window.fill(wood)
@@ -236,7 +244,6 @@ while finished == False:
             #Pawn promotion
             if (prevMovedPiece == 9):
                 if newLocation[0] == 0:
-                    promotionSquare = newLocation
                     upgradePawn = True
             if (prevMovedPiece == 3):
                 if newLocation[0] == 7:
