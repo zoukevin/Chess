@@ -11,6 +11,8 @@ class Check():
         
         board = copy.deepcopy(originalBoard)
         
+        board[selectedPieceIndices] = 12
+
         if ((selectedPieceType == 9) or (selectedPieceType == 3)) and Piece.enPessant(selectedPieceIndices, clickedIndices, selectedPieceType, board[clickedIndices], board, prevMovedPiece, prevMove):
                 board[selectedPieceIndices[0], selectedPieceIndices[1] + (clickedIndices[1] - selectedPieceIndices[1])] = 12
         oldLocation = selectedPieceIndices
