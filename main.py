@@ -281,7 +281,6 @@ while finished == False:
                                     if Piece.isValid((i, j), (x, y), targetPieceType, board[(x, y)], board, prevMovedPiece, prevMove, castleFlags):
                                         if Check.isCheck((i, j), (x, y), targetPieceType, board[(x, y)], board, prevMovedPiece, prevMove, castleFlags, event.type, event.button, dragging):
                                             possibleMove = True
-                                            print((i, j), (x, y), targetPieceType, board[(x, y)])
             else:
                 for i in range(8):
                     for j in range(8):
@@ -293,12 +292,9 @@ while finished == False:
                                     if Piece.isValid((i, j), (x, y), targetPieceType, board[(x, y)], board, prevMovedPiece, prevMove, castleFlags):
                                         if Check.isCheck((i, j), (x, y), targetPieceType, board[(x, y)], board, prevMovedPiece, prevMove, castleFlags, event.type, event.button, dragging):
                                             possibleMove = True
-                                            print((i, j), (x, y), targetPieceType, board[(x, y)])
                                             
             if possibleMove == False:
-                if selectedPieceType <= 5:
-                    print("Checkmate")
-            print("----------------------")
+                print("Checkmate")
 
     #Draw the chessboard
     for x in range(8):
