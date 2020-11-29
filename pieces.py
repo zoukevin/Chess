@@ -58,27 +58,13 @@ class Piece():
     #Check both sides for enpessant validity
     @staticmethod
     def enPessant(position, newPosition, pieceType, targetPieceType, board, prevMovedPiece, prevMove):
-        checkLeft = position[0], position[1] - 1
-        checkRight = position[0], position[1] + 1
-        validEP = False
-        checkDirection = checkLeft 
-
-        #If the pawn hasnt moved yet and the previous move was an enemy pawn onto a valid square, proceed to enpessant
-        if (prevMove[0][0] == 1 and prevMove[1][0] == 3 and prevMovedPiece == 3) or (prevMove[0][0] == 6 and prevMove[1][0] == 4 and prevMovedPiece == 9):
-            if position[1] != 0: #Skip the left check for out of bounds case
-                if Piece.isTargetEnemy(position, checkLeft, pieceType, board[checkLeft]):   #Check for left direction the pawn is enpessanting   
-                    checkDirection = checkLeft
-                    if board[checkLeft] == 3 or board[checkLeft] == 9: #Ensure the piece taken is a pawn
-                        validEP = True
-            if position[1] != 7: #Skip the right check for out of bounds case
-                if Piece.isTargetEnemy(position, checkRight, pieceType, board[checkRight]): #Check for right direction the pawn is enpessanting   
-                    checkDirection = checkRight
-                    if board[checkRight] == 3 or board[checkRight] == 9:
-                        validEP = True
-            return True if validEP == True and (checkDirection[1] == prevMove[1][1]) and (checkDirection[1] == newPosition[1]) else False
-
-        else:
-            return False
+        if (prevMove[0][0] == 1 and prevMove[1][0] == 3) or (prevMove[0][0] == 6 and prevMove[1][0] == 4): #If Pawn moves forward twice
+            if board[newPosition] == 12:
+                if newPosition[1] == prevMove[1][1]: #Checks for the direction the piece is moving in is correct
+                    #Checks for the piece you are taking is a pawn
+                    if Piece.isTargetEnemy(position, newPosition, pieceType, board[prevMove[1]]) and board[prevMove[1]] == 3 or board[prevMove[1]] == 9: 
+                        return True
+                return False
 
     #Returns true if the move follows a correct pattern of the piece
     @staticmethod
@@ -88,6 +74,7 @@ class Piece():
             return False
 
         #King
+        #TO DO HARD CODE POSITION TO MAKE SURE ITS EMPTY BEFORE CASTLING
         if (pieceType == 7) or (pieceType == 1):
             if (position[1] == newPosition[1]):
                 if (abs(newPosition[0] - position[0]) == 1):
