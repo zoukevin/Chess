@@ -165,6 +165,8 @@ while finished == False:
         #Update board logic
         if movePiece:
             movePiece = False
+
+            
             if ((selectedPieceType == 9) or (selectedPieceType == 3)) and Piece.enPessant(selectedPieceIndices, clickedIndices, selectedPieceType, board[clickedIndices], board, prevMovedPiece, prevMove):
                 board[selectedPieceIndices[0], selectedPieceIndices[1] + (clickedIndices[1] - selectedPieceIndices[1])] = 12
             if selectedPieceIndices == (7, 0) or clickedIndices == (7, 0):
@@ -206,8 +208,59 @@ while finished == False:
                 if newLocation[0] == 0:
                     upgradePawn = True
             
+            #Update rook when castling
+            if (selectedPieceType == 7):
+                if (abs(newLocation[1] - oldLocation[1]) == 2):
+                    if (newLocation[1] == 2):
+                        board[7, 0] = 12
+                        board[7, 3] = 11
+                    if (newLocation[1] == 6):
+                        board[7, 7] = 12
+                        board[7, 5] = 11
+            elif (selectedPieceType == 1):
+                if (abs(newLocation[1] - oldLocation[1]) == 2):
+                    if (newLocation[1] == 2):
+                        board[0, 0] = 12
+                        board[0, 3] = 5
+                    if (newLocation[1] == 6):
+                        board[0, 7] = 12
+                        board[0, 5] = 5
+                    
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and dragging == False:
                 board[selectedPieceIndices] = 12
+
+            #Check if checkmate
+            possibleMove = False
+            if selectedPieceType <= 5:
+                for i in range(8):
+                    for j in range(8):
+                        if (6 <= board[i,j] <= 11):
+                            targetPieceType = board[i,j]
+                            #Iterate through all moves of the piece, checkmate if none of them are valid
+                            for x in range(8):
+                                for y in range(8):
+                                    if Piece.isValid((i, j), (x, y), targetPieceType, board[(x, y)], board, prevMovedPiece, prevMove, castleFlags):
+                                        if Check.isCheck((i, j), (x, y), targetPieceType, board[(x, y)], board, prevMovedPiece, prevMove, castleFlags, event.type, event.button, dragging):
+                                            possibleMove = True
+                                            print((i, j), (x, y), targetPieceType, board[(x, y)])
+            else:
+                for i in range(8):
+                    for j in range(8):
+                        if (board[i,j] <= 5):
+                            targetPieceType = board[i,j]
+                            #Iterate through all moves of the piece, checkmate if none of them are valid
+                            for x in range(8):
+                                for y in range(8):
+                                    if Piece.isValid((i, j), (x, y), targetPieceType, board[(x, y)], board, prevMovedPiece, prevMove, castleFlags):
+                                        if Check.isCheck((i, j), (x, y), targetPieceType, board[(x, y)], board, prevMovedPiece, prevMove, castleFlags, event.type, event.button, dragging):
+                                            possibleMove = True
+                                            print((i, j), (x, y), targetPieceType, board[(x, y)])
+                                            
+            if possibleMove == False:
+                if selectedPieceType <= 5:
+                    print("Checkmate")
+            print("----------------------")
+            
             
 
     #Draw the chessboard
