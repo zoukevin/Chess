@@ -110,8 +110,6 @@ while finished == False:
                 if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                     pos = pygame.mouse.get_pos()
                     clickedIndices = (math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth))
-                    print(clickedIndices)
-                    print(newLocation)
                     if clickedIndices == (newLocation[0]-3, newLocation[1]):
                         board[newLocation] = bQ
                     elif clickedIndices == (newLocation[0]-2, newLocation[1]):
