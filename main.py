@@ -4,6 +4,8 @@ import numpy as np
 import math
 from pieces import *
 import string
+from check import *
+
 
 screenWidth = 1280
 screenHeight = 800
@@ -33,6 +35,7 @@ defeatedWhite = []
 defeatedBlack = []
 movePiece = False
 castleFlags = [False, False, False, False, False, False] #wlR, wrR, wk, blR, brR, bk
+upgradePawn = False
 
 def InitPygame(screenWidth, screenHeight):
     global window
@@ -70,6 +73,17 @@ board[6, :] = wp
 selectedPieceType = board[selectedPieceIndices]
 
 while finished == False:
+
+    while (upgradePawn == True):
+        if (turn == False):
+            window.blit(images["wB"], (squareWidth*9, screenHeight - 200))
+            for event in pygame.event.get():
+                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                    clickedIndices = (math.floor(pos[1]/squareWidth), math.floor(pos[0]/squareWidth))
+                    print("Clicked new piece")
+                    upgradePawn = False 
+
+
     window.fill(wood)
     
     for event in pygame.event.get():
@@ -113,7 +127,7 @@ while finished == False:
                 #Move the selected piece and remove the previous position from the board
                 else:
                     isPieceSelected = False
-                    if Piece.isValid(selectedPieceIndices, clickedIndices, selectedPieceType, board[clickedIndices], board, prevMovedPiece, prevMove, castleFlags):
+                    if Piece.isValid(selectedPieceIndices, clickedIndices, selectedPieceType, board[clickedIndices], board, prevMovedPiece, prevMove, castleFlags) and Check.isCheck(selectedPieceIndices, clickedIndices, selectedPieceType, board[clickedIndices], board, prevMovedPiece, prevMove, castleFlags, event.type, event.button, dragging):
                         movePiece = True
                     dragging = False
 
@@ -141,7 +155,7 @@ while finished == False:
             #Move the selected piece and remove the previous position from the board
             if isPieceSelected:
                 isPieceSelected = False
-                if Piece.isValid(selectedPieceIndices, clickedIndices, selectedPieceType, board[clickedIndices], board, prevMovedPiece, prevMove, castleFlags):
+                if Piece.isValid(selectedPieceIndices, clickedIndices, selectedPieceType, board[clickedIndices], board, prevMovedPiece, prevMove, castleFlags) and Check.isCheck(selectedPieceIndices, clickedIndices, selectedPieceType, board[clickedIndices], board, prevMovedPiece, prevMove, castleFlags, event.type, event.button, dragging):
                     movePiece = True
                 else:
                     board[selectedPieceIndices] = selectedPieceType
@@ -153,17 +167,17 @@ while finished == False:
             movePiece = False
             if ((selectedPieceType == 9) or (selectedPieceType == 3)) and Piece.enPessant(selectedPieceIndices, clickedIndices, selectedPieceType, board[clickedIndices], board, prevMovedPiece, prevMove):
                 board[selectedPieceIndices[0], selectedPieceIndices[1] + (clickedIndices[1] - selectedPieceIndices[1])] = 12
-            if selectedPieceIndices == (7, 0) or clickedIndices == (7, 0) :
+            if selectedPieceIndices == (7, 0) or clickedIndices == (7, 0):
                 castleFlags[0] = True
-            elif selectedPieceIndices == (7, 7) or clickedIndices == (7, 7) :
+            elif selectedPieceIndices == (7, 7) or clickedIndices == (7, 7):
                 castleFlags[1] = True
-            elif selectedPieceIndices == (7, 4) or clickedIndices == (7, 4) :
+            elif selectedPieceIndices == (7, 4) or clickedIndices == (7, 4):
                 castleFlags[2] = True
-            elif selectedPieceIndices == (0, 0) or clickedIndices == (0, 0) :
+            elif selectedPieceIndices == (0, 0) or clickedIndices == (0, 0):
                 castleFlags[3] = True
-            elif selectedPieceIndices == (0, 7) or clickedIndices == (0, 7) :
+            elif selectedPieceIndices == (0, 7) or clickedIndices == (0, 7):
                 castleFlags[4] = True
-            elif selectedPieceIndices == (0, 4) or clickedIndices == (0, 4) :
+            elif selectedPieceIndices == (0, 4) or clickedIndices == (0, 4):
                 castleFlags[5] = True
             
             oldLocation = selectedPieceIndices
@@ -187,6 +201,10 @@ while finished == False:
                 
             turn = False if turn == True else True
             turnNumber += 1
+
+            if (prevMovedPiece >= 6):
+                if newLocation[0] == 0:
+                    upgradePawn = True
             
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and dragging == False:
                 board[selectedPieceIndices] = 12
