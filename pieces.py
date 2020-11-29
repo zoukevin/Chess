@@ -58,7 +58,8 @@ class Piece():
     #Check both sides for enpessant validity
     @staticmethod
     def enPessant(position, newPosition, pieceType, targetPieceType, board, prevMovedPiece, prevMove):
-        if (prevMove[0][0] == 1 and prevMove[1][0] == 3) or (prevMove[0][0] == 6 and prevMove[1][0] == 4): #If Pawn moves forward twice
+        #If Pawn moves forward twice and players pawn is on a valid row
+        if (prevMove[0][0] == 1 and prevMove[1][0] == 3 and position[0] == 3) or (prevMove[0][0] == 6 and prevMove[1][0] == 4 and position[0] == 4): 
             if board[newPosition] == 12:
                 if newPosition[1] == prevMove[1][1]: #Checks for the direction the piece is moving in is correct
                     #Checks for the piece you are taking is a pawn
