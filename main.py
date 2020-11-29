@@ -14,7 +14,7 @@ fps = 60
 
 finished = False
 isPieceSelected = False
-pieceSelected = (0,0)
+selectedPieceIndices = (0,0)
 oldLocation = (0,0)
 newLocation = (0,0)
 turn = True
@@ -67,6 +67,8 @@ board[1, :] = bp
 board[7, :] = [wR, wN, wB, wQ, wK, wB, wN, wR]
 board[6, :] = wp
 
+selectedPieceType = board[selectedPieceIndices]
+
 while finished == False:
     window.fill(wood)
     
@@ -98,19 +100,20 @@ while finished == False:
                 #Prepare to select a piece.
                 if (isPieceSelected == False): 
                     isPieceSelected = True
-                    pieceSelected = clickedIndices
-                    if (turn and board[pieceSelected] < 6) or (turn == False and board[pieceSelected] > 5):
+                    selectedPieceIndices = clickedIndices
+                    selectedPieceType = board[selectedPieceIndices]
+                    if (turn and selectedPieceType < 6) or (turn == False and selectedPieceType > 5):
                         isPieceSelected = False
                     #If the square is empty, then reset the selected piece.
-                    if board[pieceSelected] == 12:
-                        pieceSelected = (0, 0)
+                    if board[selectedPieceIndices] == 12:
+                        selectedPieceIndices = (0, 0)
                         isPieceSelected = False 
                     dragging = False
 
                 #Move the selected piece and remove the previous position from the board
                 else:
                     isPieceSelected = False
-                    if Piece.isValid(pieceSelected, clickedIndices, board[pieceSelected], board[clickedIndices], board, prevMovedPiece, prevMove, castleFlags):
+                    if Piece.isValid(selectedPieceIndices, clickedIndices, selectedPieceType, board[clickedIndices], board, prevMovedPiece, prevMove, castleFlags):
                         movePiece = True
                     dragging = False
 
@@ -118,19 +121,19 @@ while finished == False:
             if event.type == pygame.MOUSEMOTION:
                 #Make the piece follow the mouse cursor 
                 if isPieceSelected and pieceIsDragged == False:
-                    movingPiece = board[pieceSelected]
-                    board[pieceSelected] = 12
+                    selectedPieceType = board[selectedPieceIndices]
+                    board[selectedPieceIndices] = 12
                     pieceIsDragged = True           
                 dragging = True   
                 #Prepare to select a piece. 
                 if (isPieceSelected == False):
                     isPieceSelected = True
-                    pieceSelected = clickedIndices
-                    if (turn and board[pieceSelected] < 6) or (turn == False and board[pieceSelected] > 5):
+                    selectedPieceIndices = clickedIndices
+                    if (turn and board[selectedPieceIndices] < 6) or (turn == False and board[selectedPieceIndices] > 5):
                         isPieceSelected = False
                     # #If the square is empty, then reset the selected piece
-                    if board[pieceSelected] == 12:
-                        pieceSelected = (0, 0)
+                    if board[selectedPieceIndices] == 12:
+                        selectedPieceIndices = (0, 0)
                         isPieceSelected = False 
                     dragging = False
 
@@ -138,56 +141,61 @@ while finished == False:
             #Move the selected piece and remove the previous position from the board
             if isPieceSelected:
                 isPieceSelected = False
-                if Piece.isValid(pieceSelected, clickedIndices, movingPiece, board[clickedIndices], board, prevMovedPiece, prevMove, castleFlags):
+                if Piece.isValid(selectedPieceIndices, clickedIndices, selectedPieceType, board[clickedIndices], board, prevMovedPiece, prevMove, castleFlags):
                     movePiece = True
                 else:
-                    board[pieceSelected] = movingPiece
+                    board[selectedPieceIndices] = selectedPieceType
                 pieceIsDragged = False
                 dragging = False
 
         #Update board logic
         if movePiece:
-            if ((movingPiece == 9) or (movingPiece == 3)) and Piece.enPessant(pieceSelected, clickedIndices, movingPiece, board[clickedIndices], board, prevMovedPiece, prevMove):
-                board[pieceSelected[0], pieceSelected[1] + (clickedIndices[1] - pieceSelected[1])] = 12
-            if pieceSelected == (7, 0):
-                castleFlags[0] = True
-            elif pieceSelected == (7, 7):
-                castleFlags[1] = True
-            elif pieceSelected == (7, 4):
-                castleFlags[2] = True
-            elif pieceSelected == (0, 0):
-                castleFlags[3] = True
-            elif pieceSelected == (0, 7):
-                castleFlags[4] = True
-            elif pieceSelected == (0, 4):
-                castleFlags[5] = True
             movePiece = False
-            prevMovedPiece = movingPiece
+            if ((selectedPieceType == 9) or (selectedPieceType == 3)) and Piece.enPessant(selectedPieceIndices, clickedIndices, selectedPieceType, board[clickedIndices], board, prevMovedPiece, prevMove):
+                board[selectedPieceIndices[0], selectedPieceIndices[1] + (clickedIndices[1] - selectedPieceIndices[1])] = 12
+            if selectedPieceIndices == (7, 0) or clickedIndices == (7, 0) :
+                castleFlags[0] = True
+            elif selectedPieceIndices == (7, 7) or clickedIndices == (7, 7) :
+                castleFlags[1] = True
+            elif selectedPieceIndices == (7, 4) or clickedIndices == (7, 4) :
+                castleFlags[2] = True
+            elif selectedPieceIndices == (0, 0) or clickedIndices == (0, 0) :
+                castleFlags[3] = True
+            elif selectedPieceIndices == (0, 7) or clickedIndices == (0, 7) :
+                castleFlags[4] = True
+            elif selectedPieceIndices == (0, 4) or clickedIndices == (0, 4) :
+                castleFlags[5] = True
+            
+            oldLocation = selectedPieceIndices
+            newLocation = clickedIndices
+            prevMove = (oldLocation, newLocation)
+            prevMovedPiece = selectedPieceType
+
             if board[clickedIndices] < 6:
                 defeatedBlack.append(board[clickedIndices])
             elif board[clickedIndices] < 12:
                 defeatedWhite.append(board[clickedIndices])
-            board[clickedIndices] = movingPiece
-            oldLocation = pieceSelected
-            newLocation = clickedIndices
-            savedMove = (string.ascii_lowercase[pieceSelected[1]] + str(9 - (pieceSelected[0] + 1)), string.ascii_lowercase[clickedIndices[1]] + str(9 - (clickedIndices[0] + 1)))
+            board[clickedIndices] = selectedPieceType
+            
+            savedMove = (string.ascii_lowercase[selectedPieceIndices[1]] + str(9 - (selectedPieceIndices[0] + 1)), string.ascii_lowercase[clickedIndices[1]] + str(9 - (clickedIndices[0] + 1)))
             if turn == True:
                 whiteMoves.append(savedMove)
                 allMoves.append(savedMove)
             else:
                 blackMoves.append(savedMove)
                 allMoves.append(savedMove)
+                
             turn = False if turn == True else True
             turnNumber += 1
-            prevMove = (oldLocation, newLocation)
+            
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and dragging == False:
-                board[pieceSelected] = 12
+                board[selectedPieceIndices] = 12
             
 
     #Draw the chessboard
     for x in range(8):
         for y in range(8):
-            if isPieceSelected and (x, y) == pieceSelected:
+            if isPieceSelected and (x, y) == selectedPieceIndices:
                 color = red
             else:
                 color = white if (((x + y) % 2) == 0) else gray
@@ -201,7 +209,7 @@ while finished == False:
     
     #Draw piece on moving cursor
     if pieceIsDragged:
-        window.blit(images[pieceNames[movingPiece]], (math.floor(pos[0] - squareWidth // 2), math.floor(pos[1] - squareWidth // 2)))
+        window.blit(images[pieceNames[selectedPieceType]], (math.floor(pos[0] - squareWidth // 2), math.floor(pos[1] - squareWidth // 2)))
 
     #Display king for turn indicator
     if (turn == True):
