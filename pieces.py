@@ -62,7 +62,7 @@ class Piece():
             if board[newPosition] == 12:
                 if newPosition[1] == prevMove[1][1]: #Checks for the direction the piece is moving in is correct
                     #Checks for the piece you are taking is a pawn
-                    if Piece.isTargetEnemy(position, newPosition, pieceType, board[prevMove[1]]) and board[prevMove[1]] == 3 or board[prevMove[1]] == 9: 
+                    if Piece.isTargetEnemy(position, newPosition, pieceType, board[prevMove[1]]) and (board[prevMove[1]] == 3 or board[prevMove[1]] == 9): 
                         return True
                 return False
 
@@ -74,7 +74,6 @@ class Piece():
             return False
 
         #King
-        #TO DO HARD CODE POSITION TO MAKE SURE ITS EMPTY BEFORE CASTLING
         if (pieceType == 7) or (pieceType == 1):
             if (position[1] == newPosition[1]):
                 if (abs(newPosition[0] - position[0]) == 1):
@@ -82,22 +81,24 @@ class Piece():
             elif (position[0] == newPosition[0]):
                 if (abs(newPosition[1] - position[1]) == 1):
                     return True
+
                 if (abs(newPosition[1] - position[1]) == 2): #Castles
                     if pieceType == 7 and castleFlags[2] == False: #White King
-                        if newPosition[1] == 2 and castleFlags[0] == False: #lwR
+                        if (newPosition[1] == 2 and castleFlags[0] == False) and (board[7,1] == 12 and board[7,2] == 12 and board[7, 3] == 12): #lwR
                             print('leftCastle')
                             return True
-                        elif newPosition[1] == 6 and castleFlags[1] == False: #rwR
+                        elif (newPosition[1] == 6 and castleFlags[1] == False) and (board[7,5] == 12 and board[7,6] == 12): #rwR
                             print('rightCastle')
                             return True
                     if pieceType == 1 and castleFlags[5] == False: #Black King
-                        if newPosition[1] == 2 and castleFlags[3] == False: #lbR
+                        if (newPosition[1] == 2 and castleFlags[3] == False) and (board[0,1] == 12 and board[0,2] == 12 and board[0, 3] == 12): #lbR
                             print('leftCastle')
                             return True
-                        elif newPosition[1] == 6 and castleFlags[4] == False: #rbR
+                        elif (newPosition[1] == 6 and castleFlags[4] == False) and (board[0,5] == 12 and board[0,6] == 12): #rbR
                             print('rightCastle')
                             return True
                     return False
+
             elif (abs(newPosition[1] - position[1]) == 1) and (abs(newPosition[0] - position[0]) == 1):
                 return True
             return False
