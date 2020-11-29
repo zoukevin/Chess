@@ -36,6 +36,7 @@ defeatedBlack = []
 movePiece = False
 castleFlags = [False, False, False, False, False, False] #wlR, wrR, wk, blR, brR, bk
 upgradePawn = False
+checkMate = False
 
 def InitPygame(screenWidth, screenHeight):
     global window
@@ -73,6 +74,31 @@ board[6, :] = wp
 selectedPieceType = board[selectedPieceIndices]
 
 while finished == False:
+
+
+    while checkMate:
+        myfont = pygame.font.SysFont('Comic Sans MS', 50)
+        endText = myfont.render("Checkmate: Press R to restart", True, red)
+        window.blit(endText,(2*squareWidth, 2*squareWidth))
+        pygame.display.update()
+        for event in pygame.event.get():
+            if (event.type == pygame.KEYDOWN) and (event.key == pygame.K_r):
+                board[:,:] = 12 #Initialise pieces to none
+                board[0, :] = [bR, bN, bB, bQ, bK, bB, bN, bR] 
+                board[1, :] = bp
+                board[7, :] = [wR, wN, wB, wQ, wK, wB, wN, wR]
+                board[6, :] = wp
+                turn = True
+                whiteMoves = []
+                blackMoves = []
+                allMoves = []
+                turnNumber = 1
+                castleFlags = [False, False, False, False, False, False]
+                defeatedWhite = []
+                defeatedBlack = []
+
+                checkMate = False
+
 
     while (upgradePawn == True):
         if (turn == False):  #black
@@ -128,21 +154,20 @@ while finished == False:
         if ( event.type == QUIT ):
             finished = True
 
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_r:
-                board[:,:] = 12 #Initialise pieces to none
-                board[0, :] = [bR, bN, bB, bQ, bK, bB, bN, bR] 
-                board[1, :] = bp
-                board[7, :] = [wR, wN, wB, wQ, wK, wB, wN, wR]
-                board[6, :] = wp
-                turn = True
-                whiteMoves = []
-                blackMoves = []
-                allMoves = []
-                turnNumber = 1
-                castleFlags = [False, False, False, False, False, False]
-                defeatedWhite = []
-                defeatedBlack = []
+        if (event.type == pygame.KEYDOWN) and (event.key == pygame.K_r):
+            board[:,:] = 12 #Initialise pieces to none
+            board[0, :] = [bR, bN, bB, bQ, bK, bB, bN, bR] 
+            board[1, :] = bp
+            board[7, :] = [wR, wN, wB, wQ, wK, wB, wN, wR]
+            board[6, :] = wp
+            turn = True
+            whiteMoves = []
+            blackMoves = []
+            allMoves = []
+            turnNumber = 1
+            castleFlags = [False, False, False, False, False, False]
+            defeatedWhite = []
+            defeatedBlack = []
 
         #Mouse click to move
         if pygame.mouse.get_pressed()[0]:
@@ -294,7 +319,7 @@ while finished == False:
                                             possibleMove = True
                                             
             if possibleMove == False:
-                print("Checkmate")
+                checkMate = True
 
     #Draw the chessboard
     for x in range(8):
