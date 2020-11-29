@@ -196,8 +196,6 @@ while finished == False:
         #Update board logic
         if movePiece:
             movePiece = False
-
-            
             if ((selectedPieceType == 9) or (selectedPieceType == 3)) and Piece.enPessant(selectedPieceIndices, clickedIndices, selectedPieceType, board[clickedIndices], board, prevMovedPiece, prevMove):
                 board[selectedPieceIndices[0], selectedPieceIndices[1] + (clickedIndices[1] - selectedPieceIndices[1])] = 12
             if selectedPieceIndices == (7, 0) or clickedIndices == (7, 0):
@@ -261,10 +259,10 @@ while finished == False:
                     if (newLocation[1] == 6):
                         board[0, 7] = 12
                         board[0, 5] = 5
-                    
+
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and dragging == False:
                 board[selectedPieceIndices] = 12
-
+            
             #Check if checkmate
             possibleMove = False
             if selectedPieceType <= 5:
@@ -296,8 +294,6 @@ while finished == False:
                 if selectedPieceType <= 5:
                     print("Checkmate")
             print("----------------------")
-            
-            
 
     #Draw the chessboard
     for x in range(8):
@@ -365,4 +361,3 @@ while finished == False:
 
     pygame.display.update()
     timer.tick(fps)
-
