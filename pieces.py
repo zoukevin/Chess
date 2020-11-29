@@ -74,7 +74,6 @@ class Piece():
             return False
 
         #King
-        #TO DO HARD CODE POSITION TO MAKE SURE ITS EMPTY BEFORE CASTLING
         if (pieceType == 7) or (pieceType == 1):
             if (position[1] == newPosition[1]):
                 if (abs(newPosition[0] - position[0]) == 1):
@@ -99,7 +98,7 @@ class Piece():
                             print('rightCastle')
                             return True
                     return False
-                    
+
             elif (abs(newPosition[1] - position[1]) == 1) and (abs(newPosition[0] - position[0]) == 1):
                 return True
             return False
