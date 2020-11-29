@@ -62,7 +62,7 @@ class Piece():
             if board[newPosition] == 12:
                 if newPosition[1] == prevMove[1][1]: #Checks for the direction the piece is moving in is correct
                     #Checks for the piece you are taking is a pawn
-                    if Piece.isTargetEnemy(position, newPosition, pieceType, board[prevMove[1]]) and board[prevMove[1]] == 3 or board[prevMove[1]] == 9: 
+                    if Piece.isTargetEnemy(position, newPosition, pieceType, board[prevMove[1]]) and (board[prevMove[1]] == 3 or board[prevMove[1]] == 9): 
                         return True
                 return False
 
